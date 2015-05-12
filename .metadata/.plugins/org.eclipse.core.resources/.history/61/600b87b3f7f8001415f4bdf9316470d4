@@ -1,0 +1,7 @@
+package MapClass;
+
+public class Obstacle {
+	int width; 
+	int height; 
+
+}

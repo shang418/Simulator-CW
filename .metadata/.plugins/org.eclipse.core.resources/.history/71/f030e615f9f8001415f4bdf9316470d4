@@ -1,0 +1,17 @@
+package MapClass;
+
+import java.awt.Rectangle;
+import java.awt.geom.*;
+
+public class Obstacle extends Rectangle {
+	int width; 
+	int height; 
+	int xc; 
+	int yc; 
+	
+		public Obstacle(int xc, int yc, int width, int height ){
+		
+		}
+		
+
+}

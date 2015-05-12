@@ -1,0 +1,21 @@
+package MapClass;
+
+import java.util.ArrayList;
+
+public class Map {
+	// fix the width and length of the map 
+	final int width=480; 
+	final int length=680; 
+	ArrayList<Obstacle> list_obstacles; 
+	
+	public Map(int num_obs){
+			try {
+				if(num_obs<0 || num_obs>10){
+				throw new Exception("Number of obstacles needs to be between 0 and 10");
+				}
+					} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+	}
+}

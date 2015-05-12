@@ -1,0 +1,12 @@
+package MapClass;
+
+public class Map {
+	// fix the width and length of the map 
+	final int width=480; 
+	final int length=680; 
+	ArrayList<Obstacle> list_obstacles; 
+	
+	public Map(int num_obs){
+		
+	}
+}

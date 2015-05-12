@@ -1,0 +1,9 @@
+package MapClass;
+
+public class Map {
+	int width; 
+	int length; 
+	ArrayList<Obstacle> list_obstacles; 
+	
+
+}
