@@ -8,7 +8,7 @@ import org.junit.runner.JUnitCore;
 public class MapTest {
 
 	// validate num of obstacles stays between ranges of 0 and 10;
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void verifyObstacleLimits(){
 		// greater than 10
 		Map map= new Map(12);

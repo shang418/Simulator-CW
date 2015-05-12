@@ -1,0 +1,11 @@
+package MapClass;
+
+import org.junit.*;
+import org.junit.runner.JUnitCore;
+
+public class MapTest {
+
+	public static void main(String[] args){
+	JUnitCore.main(MapTest.class.getName());	
+	}
+}

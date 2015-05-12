@@ -32,7 +32,6 @@ public class Map {
 					System.out.println("Number is greater than maxmimum, Number automatically reset to "+max);
 					return max;	
 				}
-		System.out.println("Number valid: you're good to go");
 		return n; 
 		}
 	public void generateObstacles(){

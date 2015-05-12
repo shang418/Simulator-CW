@@ -21,7 +21,7 @@ public class Map {
 	
 	public Map(int num_obs){
 			this.num=validateIntegers(num_obs, MIN_NUM_OBSTACLES,MAX_NUM_OBSTACLES);
-			//generateObstacles();
+			generateObstacles();
 	}
 	public int validateIntegers(int n, int min, int max){
 				if(n<min){
@@ -32,7 +32,6 @@ public class Map {
 					System.out.println("Number is greater than maxmimum, Number automatically reset to "+max);
 					return max;	
 				}
-		System.out.println("Number valid: you're good to go");
 		return n; 
 		}
 	public void generateObstacles(){
