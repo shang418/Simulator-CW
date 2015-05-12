@@ -89,8 +89,14 @@ public class Map {
 	public Point2D getStartpoint() {
 		return startpoint;
 	}
+	public void setStartpoint(Point startpoint) {
+		this.startpoint = startpoint;
+	}
 	public Point getGoalpoint() {
 		return goalpoint;
+	}
+	public void setGoalpoint(Point goalpoint) {
+		this.goalpoint = goalpoint;
 	}
 	public ArrayList<Obstacle> getList_obstacles() {
 		return list_obstacles;
