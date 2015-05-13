@@ -23,7 +23,6 @@ public class DisplayServer extends JPanel implements KeyListener {
   protected int shapeX[], shapeY[];
   protected JFrame frame;
   protected NumberFormat format = new DecimalFormat("#####.##");
-  protected String myHostname; 
 
   public class History {
     History() {
@@ -134,13 +133,12 @@ public class DisplayServer extends JPanel implements KeyListener {
     }
   }
 
-  public DisplayServer (String hostname) {
+  public DisplayServer () {
 	  // generate random number of obstacles on the map
 	Random rand=new Random();
 	int num=rand.nextInt(20);
 	System.out.println(num);
 	myMap=new Map(num);
-    myHostname = hostname;
     shapeX = new int[9];
     shapeY = new int[9];
 
@@ -169,7 +167,7 @@ public class DisplayServer extends JPanel implements KeyListener {
   {
     JFrame.setDefaultLookAndFeelDecorated(true);
 
-    frame = new JFrame("16.35 Display: "+myHostname);
+    frame = new JFrame("16.35 Display: Seek 'N' Destroy");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     Container container = frame.getContentPane();
    // container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
@@ -264,25 +262,5 @@ public class DisplayServer extends JPanel implements KeyListener {
     l.start();
   }
 
-  public static void main(String [] argv) {
-    try {
-      ServerSocket s = new ServerSocket(5065);
-      s.setReuseAddress(true);      
-      if (!s.isBound())
-	System.exit(-1);
-      String address = InetAddress.getLocalHost().getHostAddress();
-      DisplayServer d = new DisplayServer(address);
-      do {
-	Socket client = s.accept();
-	d.addClient(client);
-      } while (true);
-    } 
-    catch (IOException e) {
-      System.err.println("I couldn't create a new socket.\n"+
-                         "You probably are already running DisplayServer.\n");
-      System.err.println(e);
-      System.exit(-1);
-    }
-  }
 
 }
