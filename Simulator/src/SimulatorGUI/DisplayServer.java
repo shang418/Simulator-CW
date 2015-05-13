@@ -13,7 +13,11 @@ import java.net.*;
 import java.text.*;
 import java.util.*;
 
+// import custom map
+import MapClass.Map;
+
 public class DisplayServer extends JPanel implements KeyListener {
+  private Map myMap; 
   protected double gvX [], gvY[], gvTheta[];
   protected int numVehicles = 0;
   protected int shapeX[], shapeY[];
@@ -131,6 +135,11 @@ public class DisplayServer extends JPanel implements KeyListener {
   }
 
   public DisplayServer (String hostname) {
+	  // generate random number of obstacles on the map
+	Random rand=new Random();
+	int num=rand.nextInt(20);
+	System.out.println(num);
+	myMap=new Map(num);
     myHostname = hostname;
     shapeX = new int[9];
     shapeY = new int[9];
@@ -160,21 +169,24 @@ public class DisplayServer extends JPanel implements KeyListener {
   {
     JFrame.setDefaultLookAndFeelDecorated(true);
 
-    frame = new JFrame("16.35 Display");
+    frame = new JFrame("16.35 Display: "+myHostname);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     Container container = frame.getContentPane();
-    //container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
+   // container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
     container.setLayout(new BorderLayout());
-    
-    setOpaque(true);   
+    this.setOpaque(false);
     setFocusable(true);
-    setMinimumSize(new Dimension(500,500));
-    setPreferredSize(new Dimension(500,500));
+    setMinimumSize(new Dimension(640,500));
+    setSize(new Dimension(640,500));
+    setPreferredSize(new Dimension(640,500));
     addKeyListener(this);
-    container.add(this,BorderLayout.WEST);
+    container.add(myMap, BorderLayout.WEST);
+   
+ //  myMap.repaint();
+ myMap.add(this);
     setVisible(true);
-
     frame.pack();
+   // frame.setResizable(false);
     frame.setVisible(true);    
   }
 
@@ -186,6 +198,7 @@ public class DisplayServer extends JPanel implements KeyListener {
   {
     switch (e.getKeyChar()) {
     case 'q':
+    	System.exit(0);
     case 'Q':
       System.exit(0);
     }
@@ -240,12 +253,7 @@ public class DisplayServer extends JPanel implements KeyListener {
   protected void paintComponent(Graphics g) {
     super.paintComponent(g); //paints the background and image
     
-    Rectangle bounds = this.getBounds();
     g.setColor(Color.white);
-    g.fillRect(0, 0, bounds.width, bounds.height);
-
-    g.setColor(Color.black);
-    g.drawString("Display running on "+myHostname, 10,10);
     if (trace) 
       drawHistories(g);
     drawVehicles(g);

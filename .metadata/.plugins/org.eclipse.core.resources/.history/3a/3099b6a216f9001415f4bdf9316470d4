@@ -1,0 +1,9 @@
+package MapClass;
+
+public class CSpace {
+	Map MapClass; 
+	
+	public CSpace(){
+		
+	}
+}
