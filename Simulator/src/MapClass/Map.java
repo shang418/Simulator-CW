@@ -47,6 +47,7 @@ public class Map extends JPanel {
 			this.setOpaque(true);
 			this.setVisible(true);
 			generateObstacles();
+			addWallsasObstacles();
 	}
 	public int validateIntegers(int n, int min, int max){
 				if(n<min){
@@ -59,6 +60,16 @@ public class Map extends JPanel {
 				}
 		return n; 
 		}
+	public void addWallsasObstacles(){
+		Obstacle leftWall=new Obstacle(0,0,1,WIDTH-1); 
+		list_obstacles.add(leftWall);
+		Obstacle topWall=new Obstacle(0,0,LENGTH-1,1); 
+		list_obstacles.add(topWall);
+		Obstacle rightWall=new Obstacle(0,LENGTH,1,WIDTH-1); 
+		list_obstacles.add(rightWall);
+		Obstacle bottomWall=new Obstacle(WIDTH,0,LENGTH-1,1); 
+		list_obstacles.add(leftWall);
+	}
 	public void generateObstacles(){
 		// leave capability for different types of obstacles
 		Random rand=new Random();

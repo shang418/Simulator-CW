@@ -1,0 +1,19 @@
+package MapClass;
+
+import java.util.ArrayList;
+
+public class CSpace {
+	Map MapClass; 
+	ArrayList<Obstacle> cspace_obs;
+	
+	public CSpace(Map mapclass){
+		this.MapClass=mapclass; 
+		this.cspace_obs=new ArrayList<Obstacle>();
+	}
+	
+	public void configureCSpace(){
+		for(Obstacle obs: this.MapClass.getList_obstacles()){
+			obs.setBounds((int)(obs.getX()-Player.RADIUS), (int)(obs.getY()-Player.RADIUS), (int)(obs.getWidth()+(2*Player.RADIUS)), (int)(obs.getLength()+(2*Player.RADIUS)));
+		}
+	}
+}

@@ -1,0 +1,11 @@
+package MapClass;
+
+public class CSpace {
+	Map MapClass; 
+	
+	public CSpace(Map mapclass){
+		this.MapClass=mapclass; 
+	}
+	
+	
+}
