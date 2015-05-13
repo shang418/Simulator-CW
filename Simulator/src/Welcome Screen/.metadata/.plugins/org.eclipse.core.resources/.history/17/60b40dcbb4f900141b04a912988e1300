@@ -1,0 +1,54 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.text.*;
+
+public class WelcomeScreen extends JPanel implements ActionListener {
+	private JLabel instructionsLabel;
+	private JButton instructButton;
+	private JLabel quitLabel;
+	private JButton quitButton;
+	private JLabel playLabel;
+	private JButton playButton;
+	
+	private JFrame welcomeFrame;
+	private JPanel welcomePanel;
+
+	
+	public WelcomeScreen(){
+		gui();
+		
+	}
+	
+	public void gui(){
+		welcomeFrame = new JFrame("Main Screen");
+		welcomeFrame.setVisible(true);
+		welcomeFrame.setSize(600,400);
+		welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		welcomePanel = new JPanel();
+		welcomePanel.setBackground(Color.WHITE);
+		
+		instructButton = new JButton("Instructions");
+		quitButton = new JButton("Quit");
+		playButton = new JButton("Play");
+		
+		welcomePanel.add(instructButton);
+		welcomePanel.add(quitButton);
+		welcomePanel.add(playButton);
+		
+		welcomeFrame.add(welcomePanel);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public static void main(String[] args){
+		new WelcomeScreen();
+	}
+	
+
+}

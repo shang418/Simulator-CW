@@ -1,0 +1,11 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+public class InstructionsScreen {
+	private JFrame instructFrame;
+	private JPanel instructPanel;
+	
+	private JButton 
+
+}

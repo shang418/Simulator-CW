@@ -1,0 +1,79 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+public class WelcomeScreen extends JPanel implements ActionListener {
+	private JLabel instructionsLabel;
+	private JButton instructButton;
+	private JLabel quitLabel;
+	private JButton quitButton;
+	private JLabel playLabel;
+	private JButton playButton;
+	
+	private JLabel welcomeTitle;
+	
+	private JFrame welcomeFrame;
+	private JPanel welcomePanel;
+	
+	private String path = "/Users/janellewellons/Pictures/IMG_0203.jpg";
+
+	
+	public WelcomeScreen(){
+		gui();
+	}
+	
+	public void gui(){
+		welcomeFrame = new JFrame("Main Screen");
+		welcomeFrame.setVisible(true);
+		welcomeFrame.setSize(800,800);
+		welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		welcomeFrame.setLocationRelativeTo(null);
+		
+		welcomePanel = new JPanel(new GridBagLayout());
+		welcomePanel.setBackground(Color.PINK);
+		
+		instructButton = new JButton("Instructions");
+		quitButton = new JButton("Quit");
+		playButton = new JButton("Play");
+		
+		welcomeTitle = new JLabel("Seek 'N' Destroy");
+		welcomeTitle.setFont(new Font("Helvetica",Font.BOLD, 60));
+		
+		//Make game go to Instructions Page when button is clicked
+		instructButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				welcomeFrame.dispose();
+				
+			}
+		});
+		
+		//Make game quit when quit button is clicked
+		quitButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				System.exit(0);
+			}
+		});
+		
+		welcomePanel.add(welcomeTitle);
+		welcomePanel.add(instructButton);
+		welcomePanel.add(quitButton);
+		welcomePanel.add(playButton);
+		
+		
+		welcomeFrame.add(welcomePanel);
+		
+	}
+	
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public static void main(String[] args){
+		new WelcomeScreen();
+	}
+	
+
+}
