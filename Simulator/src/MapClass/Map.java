@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 
 public class Map extends JPanel {
 	// fix the width and length of the map 
-	final static int WIDTH=480; 
-	final static int LENGTH=680; 
+	static final int LENGTH = 1400;
+	static final int WIDTH = 800; 
 	final static int MAX_NUM_OBSTACLES=15; 
 	final static int MIN_NUM_OBSTACLES=5;
 	final Point startpoint=new Point(450,650); 
@@ -92,7 +92,7 @@ public class Map extends JPanel {
 	//	Graphics2D bg=buffimage.createGraphics();
 		g.drawImage(this.mapImage, 0, 0,null);
 		for(Obstacle ob: this.list_obstacles){
-			System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
+			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
 			g.drawImage(ob.getImage(), (int) ob.getY(), (int) ob.getX(),null);
 		}
 	}
