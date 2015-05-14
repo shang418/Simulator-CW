@@ -26,6 +26,12 @@ public class DisplayServer extends JPanel implements KeyListener {
 	protected NumberFormat format = new DecimalFormat("#####.##");
 	PlayerUAV player; 
 	EnemyUAV enemy; 
+	Missile missile;
+	private double count=0;
+	private boolean isfired;
+	private double initial_x, initial_y, initial_theta;
+	
+	
 
 	public DisplayServer () {
 		// generate random number of obstacles on the map
@@ -45,7 +51,6 @@ public class DisplayServer extends JPanel implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println("Key pressed");
 		// Directional controls based off key events for player uav
 		if (e.getKeyCode() == KeyEvent.VK_A){
 			player.setPosition(new double[]{player.getPosition()[0] - 5, player.getPosition()[1], player.getPosition()[2]});
@@ -62,21 +67,27 @@ public class DisplayServer extends JPanel implements KeyListener {
 			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1]+5, player.getPosition()[2]});
 		}
 		if (e.getKeyCode() == KeyEvent.VK_I){
-			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1], player.getPosition()[2]+Math.PI/4});
+			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1], player.getPosition()[2]});
+			//count = 0.1;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S){
-			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1], player.getPosition()[2]-Math.PI/4});
+			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1], player.getPosition()[2]});
+			//count = -0.1;
 		}
-		// Missle Fire Event
-		if (e.getKeyCode() == KeyEvent.VK_SPACE){
-			//run missile class
-		}
+	
 		repaint();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// not used
+		if (e.getKeyCode() == KeyEvent.VK_SPACE){
+			System.out.println("Shots fired");
+			isfired = true;
+			initial_x = player.getPosition()[0];
+			initial_y = player.getPosition()[1];
+			initial_theta = player.getPosition()[2];
+		}
+		repaint();
 	}
 
 	
@@ -122,12 +133,34 @@ public class DisplayServer extends JPanel implements KeyListener {
 	}
 
 	protected synchronized void drawUAVs(Graphics g) {
+		//Graphics2D g2d = (Graphics2D)g.create();
+		//g2d.rotate(count);
 		g.setColor(Color.black);
 
 		// This chunk of code just translate and rotates the shape.
 
 		g.drawImage(this.enemy.getImage(), (int) (this.enemy.getPosition()[0]),(int) (this.enemy.getPosition()[1]), null);
 		g.drawImage(this.player.getImage(), (int) (this.player.getPosition()[0]),(int) (this.player.getPosition()[1]), null);  
+		
+		missile = new Missile(initial_x, initial_y, initial_theta, this);
+		
+		if (isfired == true){
+			g.drawImage(this.missile.getImage(),(int)(this.missile.getPosition()[0]),(int)(this.missile.getPosition()[1]), null);
+			for (int i = 0; i < 10; i++) {
+				missile.trajectory();
+				//g.drawImage(this.missile.getImage(),(int)(this.missile.getPosition()[0]),(int)(this.missile.getPosition()[1]), null);
+				repaint();
+				System.out.println("position updated: " + missile.getPosition()[0] + " " + missile.getPosition()[1] + " " + missile.getPosition()[2]);
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			isfired = false;
+		}
 	}
 
 	protected void paintComponent(Graphics g) {
