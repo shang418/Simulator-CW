@@ -18,8 +18,8 @@ public class InstructionsScreen {
 	
 	private JButton returnButton;
 	
-	static final int WIDTH = 1400;
-	static final int HEIGHT = 800;
+	static final int WIDTH = 1000;
+	static final int HEIGHT = 600;
 	
 	public InstructionsScreen(){
 		instructgui();

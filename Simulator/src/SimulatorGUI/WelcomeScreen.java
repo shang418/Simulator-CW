@@ -16,8 +16,8 @@ public class WelcomeScreen extends JPanel implements ActionListener {
 	private JPanel welcomePanelupper;
 	private JPanel welcomePanellower;
 	
-	static final int WIDTH = 1400;
-	static final int HEIGHT = 800;
+	static final int WIDTH = 1000;
+	static final int HEIGHT = 600;
 
 	
 	public WelcomeScreen(){

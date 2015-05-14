@@ -100,12 +100,10 @@ public class DisplayServer extends JPanel implements KeyListener {
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Sorry but you are out of bullets :(");
+				
 			}
 		}
 	}
-
-	
-
 
 	public void startGraphics()
 	{
@@ -131,10 +129,6 @@ public class DisplayServer extends JPanel implements KeyListener {
 		// frame.setResizable(false);
 		frame.setVisible(true);    
 	}
-
-	
-
-	
 
 	public void keyTyped(KeyEvent e)
 	{
