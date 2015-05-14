@@ -1,5 +1,0 @@
-package Avatars;
-
-public class Player {
-	final static int RADIUS=5; 
-}

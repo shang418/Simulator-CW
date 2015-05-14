@@ -1,7 +1,0 @@
-package MapClass;
-
-import org.junit.*;
-
-public class MapTest {
-
-}
