@@ -1,5 +1,6 @@
 package MapClass;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,14 +18,15 @@ import javax.swing.JPanel;
 
 public class Map extends JPanel {
 	// fix the width and length of the map 
-	static final int LENGTH = 1400;
-	static final int WIDTH = 800; 
+	public static final int LENGTH = 800;
+	public static final int WIDTH = 600; 
 	final static int MAX_NUM_OBSTACLES=15; 
 	final static int MIN_NUM_OBSTACLES=5;
 	final Point startpoint=new Point(450,650); 
 	final Point goalpoint=new Point(10,10);
 	ArrayList<Obstacle> list_obstacles; 
 	 Image mapImage; 
+	 CSpace cspace;
 	/*
 	 * <p> the number of obstacles located on the map
 	 */
@@ -41,6 +43,7 @@ public class Map extends JPanel {
 				System.out.println("Loading image file exception");
 				e.printStackTrace();
 			}
+			this.cspace=new CSpace();
 			this.setPreferredSize(new Dimension(LENGTH, WIDTH));
 			this.setMinimumSize(new Dimension(LENGTH, WIDTH));
 			this.setMaximumSize(new Dimension(LENGTH, WIDTH));
@@ -48,6 +51,13 @@ public class Map extends JPanel {
 			this.setVisible(true);
 			generateObstacles();
 			addWallsasObstacles();
+			this.cspace.configureCSpace(this);
+	}
+	public CSpace getCspace() {
+		return cspace;
+	}
+	public void setCspace(CSpace cspace) {
+		this.cspace = cspace;
 	}
 	public int validateIntegers(int n, int min, int max){
 				if(n<min){
@@ -94,6 +104,11 @@ public class Map extends JPanel {
 		for(Obstacle ob: this.list_obstacles){
 			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
 			g.drawImage(ob.getImage(), (int) ob.getY(), (int) ob.getX(),null);
+		}
+		g.setColor(Color.MAGENTA);
+		for(Obstacle ob: this.cspace.getCspace_obs()){
+			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
+			g.drawRect((int) ob.getY(), (int) ob.getX(),(int) (ob.getWidth()), (int)(ob.getHeight()));
 		}
 	}
 	/*
