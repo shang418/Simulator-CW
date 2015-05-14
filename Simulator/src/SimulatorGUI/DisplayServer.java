@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -16,19 +17,20 @@ import java.util.*;
 import Avatars.*;
 // import custom map
 import MapClass.Map;
+import MotionPlanning.Node;
 
 public class DisplayServer extends JPanel implements KeyListener {
 	private Map myMap; 
-	protected double gvX [], gvY[], gvTheta[];
 	protected int numVehicles = 0;
-	protected int shapeX[], shapeY[];
 	protected JFrame frame;
 	protected NumberFormat format = new DecimalFormat("#####.##");
 	PlayerUAV player; 
 	EnemyUAV enemy; 
 	Missile missile;
+	final int MAX_MISSILE_NUM=10;
 	private double count=0;
 	private boolean isfired;
+	ArrayList<Missile> missile_list;
 	private double initial_x, initial_y, initial_theta;
 	
 	
@@ -41,7 +43,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 		myMap=new Map(num);
 		this.enemy=new EnemyUAV(new double[] {0,0,0},0,0);
 		this.player = new PlayerUAV();
-
+		this.missile_list=new ArrayList<Missile>();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				startGraphics();
@@ -51,10 +53,15 @@ public class DisplayServer extends JPanel implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		double ny=player.getPosition()[1];
+		double nx=player.getPosition()[0];
+		double ntheta=player.getPosition()[2];
 		// Directional controls based off key events for player uav
 		if (e.getKeyCode() == KeyEvent.VK_A){
-			player.setPosition(new double[]{player.getPosition()[0] - 5, player.getPosition()[1], player.getPosition()[2]});
-			System.out.println("Pressed A");
+			if(!(myMap.getCspace().violatesCSpace(new Node ((int)(nx-5), (int)ny)))){
+				
+				nx -= 5;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_D){
 			player.setPosition(new double[]{player.getPosition()[0] + 5, player.getPosition()[1], player.getPosition()[2]});
@@ -74,20 +81,26 @@ public class DisplayServer extends JPanel implements KeyListener {
 			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1], player.getPosition()[2]});
 			//count = -0.1;
 		}
-	
+		player.setPosition(new double[]{nx,ny,ntheta});
 		repaint();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_SPACE){
+			if(this.missile_list.size()<MAX_MISSILE_NUM){
 			System.out.println("Shots fired");
-			isfired = true;
 			initial_x = player.getPosition()[0];
 			initial_y = player.getPosition()[1];
 			initial_theta = player.getPosition()[2];
+			missile = new Missile(initial_x, initial_y, initial_theta, this);
+			this.missile_list.add(missile);
+			missile.start();
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Sorry but you are out of bullets :(");
+			}
 		}
-		repaint();
 	}
 
 	
@@ -141,27 +154,19 @@ public class DisplayServer extends JPanel implements KeyListener {
 
 		g.drawImage(this.enemy.getImage(), (int) (this.enemy.getPosition()[0]),(int) (this.enemy.getPosition()[1]), null);
 		g.drawImage(this.player.getImage(), (int) (this.player.getPosition()[0]),(int) (this.player.getPosition()[1]), null);  
-		
-		missile = new Missile(initial_x, initial_y, initial_theta, this);
-		
-		if (isfired == true){
-			g.drawImage(this.missile.getImage(),(int)(this.missile.getPosition()[0]),(int)(this.missile.getPosition()[1]), null);
-			for (int i = 0; i < 10; i++) {
-				missile.trajectory();
-				//g.drawImage(this.missile.getImage(),(int)(this.missile.getPosition()[0]),(int)(this.missile.getPosition()[1]), null);
-				repaint();
-				System.out.println("position updated: " + missile.getPosition()[0] + " " + missile.getPosition()[1] + " " + missile.getPosition()[2]);
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		Iterator<Missile> missIterator= this.missile_list.listIterator();
+		while(missIterator.hasNext()){
+				Missile mle=missIterator.next();
+				MissileState state=MissileState.RUNNING;
+				state=mle.getMissileState();
+				if(state==MissileState.STOPPED){
+					System.out.println("Missile has been stopped");
 				}
-				
+				else {
+					g.drawImage(mle.getImage(),(int)(mle.getPosition()[0]),(int)(mle.getPosition()[1]), null);
+				}
 			}
-			isfired = false;
 		}
-	}
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g); //paints the background and image

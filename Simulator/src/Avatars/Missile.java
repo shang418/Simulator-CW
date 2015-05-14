@@ -11,6 +11,7 @@ public class Missile extends Thread{
 	ImageIcon icon;
 	private double _x,_y,_theta;
 	DisplayServer ds;
+	MissileState state;
 	private boolean isRunning;
 
 	public Missile(double x, double y, double theta, DisplayServer ds){
@@ -22,7 +23,7 @@ public class Missile extends Thread{
 
 		this.icon=new ImageIcon("Images/Avatars/rocket.png");
 		icon.setImage(icon.getImage().getScaledInstance(RADIUS, RADIUS, Image.SCALE_SMOOTH));
-
+		this.state=MissileState.FIRED;
 	}
 
 	public Image getImage(){
@@ -37,6 +38,10 @@ public class Missile extends Thread{
 		//this.trajectory();
 		return position;
 	}
+	
+	public MissileState getMissileState(){
+		return this.state;
+	}
 
 	public void trajectory(){
 		_x = _x + 5 * Math.sin(_theta);
@@ -50,10 +55,10 @@ public class Missile extends Thread{
 	}
 
 	@Override
-	public synchronized void run(){
-		for (int i = 0; i < 10; i++) {
-			this.trajectory();
-			System.out.println("position updated: " + _x + " " + _y + " " + this.getPosition()[2]);
+	public void run(){
+		this.state=MissileState.RUNNING;
+		for (int i = 0; i < 50; i++) {
+			trajectory();
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -62,9 +67,7 @@ public class Missile extends Thread{
 			}
 			ds.repaint();
 		}
-		isRunning = false;
-
-
+		this.state=MissileState.STOPPED;
 
 	}
 

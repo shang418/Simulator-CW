@@ -3,9 +3,8 @@ package MapClass;
 import java.awt.Point;
 import java.util.ArrayList;
 
-import com.sun.corba.se.impl.orbutil.graph.Node;
-
 import Avatars.*;
+import MotionPlanning.Node;
 import MotionPlanning.Path;
 
 public class CSpace {
@@ -34,10 +33,11 @@ public class CSpace {
 	public boolean violatesCSpace(Node n){
 		for(Obstacle obs: cspace_obs){
 			if(cspace_obs.contains((Point)n)){
-				return false;
+				System.out.println("CSpace violated");
+				return true;
 			}
 		}
-	return true;
+	return false;
 	}
 	public boolean violatesCSpace(Path p){
 		for(Obstacle obs: cspace_obs){

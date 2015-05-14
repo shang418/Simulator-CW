@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class PlayerUAV implements KeyListener{
+public class PlayerUAV {
 	private double _x,_y,_theta;
 	static final int WIDTH = 1400;
 	static final int HEIGHT = 800;
@@ -43,52 +43,16 @@ public class PlayerUAV implements KeyListener{
 	
 	public void setPosition(double[] newPos) {
 	    if (newPos.length != 3)
-	      throw new IllegalArgumentException("newPos must be of length 3");      
+	      throw new IllegalArgumentException("newPos must be of length 3");   
 	    _x = newPos[0];
 	    _y = newPos[1];
+	    
 	    _theta = newPos[2];
 
 	  }
 
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		System.out.println("Key pressed");
-		// Directional controls based off key events for player uav
-		if (e.getKeyCode() == KeyEvent.VK_A){
-			_x = _x - _velx;
-			
-		}
-		if (e.getKeyChar() == KeyEvent.VK_D){
-			_x = _x + _velx;
-		}
-		if (e.getKeyChar() == KeyEvent.VK_W){
-			_y = _y + _vely;
-		}
-		if (e.getKeyChar() == KeyEvent.VK_S){
-			_y = _y - _vely;
-		}
-		if (e.getKeyChar() == KeyEvent.VK_I){
-			_theta = _theta + rotvel;
-		}
-		if (e.getKeyChar() == KeyEvent.VK_S){
-			_theta = _theta - rotvel;
-		}
-		// Missle Fire Event
-		if (e.getKeyChar() == KeyEvent.VK_SPACE){
-			//run missile class
-		}
-	}
 
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// not used
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// not used	
-	}
 
 
 }
