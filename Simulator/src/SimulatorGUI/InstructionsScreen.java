@@ -14,6 +14,9 @@ public class InstructionsScreen {
 	
 	private JButton returnButton;
 	
+	static final int WIDTH = 1400;
+	static final int HEIGHT = 800;
+	
 	public InstructionsScreen(){
 		instructgui();
 	}
@@ -21,9 +24,9 @@ public class InstructionsScreen {
 	public void instructgui(){
 		instructFrame = new JFrame("Instructions");
 		instructFrame.setVisible(true);
-		instructFrame.setSize(800,800);
+		instructFrame.setSize(WIDTH,HEIGHT);
 		instructFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		instructFrame.setLocationRelativeTo(null);
+		//instructFrame.setLocationRelativeTo(null);
 		instructFrame.getContentPane().setBackground(Color.WHITE);
 		
 		instructPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));

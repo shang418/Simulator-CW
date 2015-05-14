@@ -6,11 +6,8 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class WelcomeScreen extends JPanel implements ActionListener {
-	private JLabel instructionsLabel;
 	private JButton instructButton;
-	private JLabel quitLabel;
 	private JButton quitButton;
-	private JLabel playLabel;
 	private JButton playButton;
 	
 	private JLabel welcomeTitle;
@@ -19,7 +16,8 @@ public class WelcomeScreen extends JPanel implements ActionListener {
 	private JPanel welcomePanelupper;
 	private JPanel welcomePanellower;
 	
-	private String path = "/Users/janellewellons/Pictures/IMG_0203.jpg";
+	static final int WIDTH = 1400;
+	static final int HEIGHT = 800;
 
 	
 	public WelcomeScreen(){
@@ -29,9 +27,9 @@ public class WelcomeScreen extends JPanel implements ActionListener {
 	public void gui(){
 		welcomeFrame = new JFrame("Main Screen");
 		welcomeFrame.setVisible(true);
-		welcomeFrame.setSize(800,800);
+		welcomeFrame.setSize(WIDTH,HEIGHT);
 		welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		welcomeFrame.setLocationRelativeTo(null);
+		//welcomeFrame.setLocationRelativeTo(null);
 		welcomeFrame.getContentPane().setBackground(Color.PINK);
 		
 		welcomePanelupper = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -61,6 +59,13 @@ public class WelcomeScreen extends JPanel implements ActionListener {
 			}
 		});
 		
+		playButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				welcomeFrame.dispose();
+				new DisplayServer();
+			}
+		});
+		
 		welcomePanelupper.add(welcomeTitle);
 		welcomePanellower.add(instructButton);
 		welcomePanellower.add(quitButton);
@@ -68,6 +73,7 @@ public class WelcomeScreen extends JPanel implements ActionListener {
 		
 		welcomeFrame.getContentPane().add(welcomePanelupper, "North");
 		welcomeFrame.getContentPane().add(welcomePanellower);
+		
 		
 	}
 	
