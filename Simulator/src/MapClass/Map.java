@@ -18,9 +18,9 @@ import javax.swing.JPanel;
 
 public class Map extends JPanel {
 	// fix the width and length of the map 
-	public static final int LENGTH = 800;
-	public static final int WIDTH = 600; 
-	final static int MAX_NUM_OBSTACLES=15; 
+	public static final int LENGTH = 1400;
+	public static final int WIDTH = 800; 
+	final static int MAX_NUM_OBSTACLES=10; 
 	final static int MIN_NUM_OBSTACLES=5;
 	final Point startpoint=new Point(450,650); 
 	final Point goalpoint=new Point(10,10);
@@ -36,7 +36,7 @@ public class Map extends JPanel {
 			this.num=validateIntegers(num_obs, MIN_NUM_OBSTACLES,MAX_NUM_OBSTACLES);
 			this.list_obstacles=new ArrayList<Obstacle>();
 			try {
-				this.mapImage=ImageIO.read(new File("Images/GameScreen/background.jpg"));
+				this.mapImage=ImageIO.read(new File("Images/GameScreen/sky.png"));
 				this.mapImage=mapImage.getScaledInstance(LENGTH, WIDTH, Image.SCALE_SMOOTH);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

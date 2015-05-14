@@ -15,14 +15,14 @@ import javax.swing.JLabel;
 
 public class Obstacle extends Rectangle {
 	
-	final static int MINSIZE=10; 
+	final static int MINSIZE=25; 
 	final static int MAXSIZE=100;
 	ObstacleImage image; 
 		
 		public class ObstacleImage extends ImageIcon{
 				public ObstacleImage(){
 					try {
-						this.setImage(ImageIO.read(new File("Images/GameScreen/Obstacles/building.jpg")));
+						this.setImage(ImageIO.read(new File("Images/GameScreen/Obstacles/balloon.png")));
 						this.setDescription("Building");
 						} catch (IOException e) {
 						// TODO Auto-generated catch block
