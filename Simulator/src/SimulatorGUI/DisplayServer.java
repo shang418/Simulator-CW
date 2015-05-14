@@ -17,6 +17,7 @@ import java.util.*;
 import Avatars.*;
 // import custom map
 import MapClass.Map;
+import MapClass.Obstacle;
 import MotionPlanning.Node;
 
 public class DisplayServer extends JPanel implements KeyListener {
@@ -117,14 +118,14 @@ public class DisplayServer extends JPanel implements KeyListener {
 		container.setLayout(new BorderLayout());
 		this.setOpaque(false);
 		setFocusable(true);
-		setMinimumSize(new Dimension(640,500));
-		setSize(new Dimension(640,500));
-		setPreferredSize(new Dimension(640,500));
+		setMinimumSize(new Dimension(1000,600));
+		setSize(new Dimension(1000,600));
+		setPreferredSize(new Dimension(1000,600));
 		addKeyListener(this);
-		container.add(myMap, BorderLayout.WEST);
+		container.add(this, BorderLayout.WEST);
 
 		//  myMap.repaint();
-		myMap.add(this);
+		//myMap.add(this);
 		setVisible(true);
 		frame.pack();
 		// frame.setResizable(false);
@@ -172,6 +173,16 @@ public class DisplayServer extends JPanel implements KeyListener {
 		super.paintComponent(g); //paints the background and image
 
 		g.setColor(Color.white);
+		g.drawImage(this.myMap.getMapImage(), 0, 0,null);
+		for(Obstacle ob: this.myMap.getList_obstacles()){
+			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
+			g.drawImage(ob.getImage(), (int) ob.getX(), (int) ob.getY(),null);
+		}
+		g.setColor(Color.MAGENTA);
+		for(Obstacle ob: this.myMap.getCspace().getCspace_obs()){
+			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
+			g.drawRect((int) ob.getX(), (int) ob.getY(),(int) (ob.getWidth()), (int)(ob.getHeight()));
+		}
 		drawUAVs(g);
 	}
 

@@ -16,13 +16,13 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-public class Map extends JPanel {
+public class Map {
 	// fix the width and length of the map 
-	public static final int LENGTH = 1400;
-	public static final int WIDTH = 800; 
+	public static final int LENGTH = 1000;
+	public static final int WIDTH = 600; 
 	final static int MAX_NUM_OBSTACLES=10; 
 	final static int MIN_NUM_OBSTACLES=5;
-	final Point startpoint=new Point(450,650); 
+	final Point startpoint=new Point(450,550); 
 	final Point goalpoint=new Point(10,10);
 	ArrayList<Obstacle> list_obstacles; 
 	 Image mapImage; 
@@ -44,14 +44,12 @@ public class Map extends JPanel {
 				e.printStackTrace();
 			}
 			this.cspace=new CSpace();
-			this.setPreferredSize(new Dimension(LENGTH, WIDTH));
-			this.setMinimumSize(new Dimension(LENGTH, WIDTH));
-			this.setMaximumSize(new Dimension(LENGTH, WIDTH));
-			this.setOpaque(true);
-			this.setVisible(true);
 			generateObstacles();
 			addWallsasObstacles();
 			this.cspace.configureCSpace(this);
+	}
+	public Image getMapImage(){
+		return this.mapImage;
 	}
 	public CSpace getCspace() {
 		return cspace;
@@ -95,7 +93,7 @@ public class Map extends JPanel {
 			this.list_obstacles.add(newObs);
 		}
 	}
-	@Override 
+/*	@Override 
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
 		//BufferedImage buffimage=new BufferedImage(Obstacle.MINSIZE, Obstacle.MAXSIZE, BufferedImage.TYPE_INT_ARGB);
@@ -110,7 +108,7 @@ public class Map extends JPanel {
 			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
 			g.drawRect((int) ob.getY(), (int) ob.getX(),(int) (ob.getWidth()), (int)(ob.getHeight()));
 		}
-	}
+	}*/
 	/*
 	 * Method that checks to see if: 
 	 * 1. Obstacles don't intersect each other
