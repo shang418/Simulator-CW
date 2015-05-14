@@ -38,9 +38,10 @@ public class DisplayServer extends JPanel implements KeyListener {
 
 	public DisplayServer () {
 		// generate random number of obstacles on the map
-		Random rand=new Random();
-		int num=rand.nextInt(20);
-		System.out.println(num);
+		//Random rand=new Random();
+		//int num=rand.nextInt(20);
+		//System.out.println(num);
+		int num=1;
 		myMap=new Map(num);
 		this.enemy=new EnemyUAV(new double[] {0,0,0},0,0);
 		this.player = new PlayerUAV();
@@ -65,14 +66,19 @@ public class DisplayServer extends JPanel implements KeyListener {
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_D){
-			player.setPosition(new double[]{player.getPosition()[0] + 5, player.getPosition()[1], player.getPosition()[2]});
-			System.out.println("Pressed D");
+			if(!(myMap.getCspace().violatesCSpace(new Node ((int)(nx+5), (int)(ny))))){	
+				nx += 5;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_W){
-			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1]-5, player.getPosition()[2]});
+			if(!(myMap.getCspace().violatesCSpace(new Node ((int)(nx), (int)(ny-5))))){	
+				ny -= 5;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S){
-			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1]+5, player.getPosition()[2]});
+			if(!(myMap.getCspace().violatesCSpace(new Node ((int)nx, (int)(ny+5))))){	
+				ny += 5;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_I){
 			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1], player.getPosition()[2]});
@@ -100,10 +106,12 @@ public class DisplayServer extends JPanel implements KeyListener {
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Sorry but you are out of bullets :(");
-				
 			}
 		}
 	}
+
+	
+
 
 	public void startGraphics()
 	{
@@ -129,6 +137,10 @@ public class DisplayServer extends JPanel implements KeyListener {
 		// frame.setResizable(false);
 		frame.setVisible(true);    
 	}
+
+	
+
+	
 
 	public void keyTyped(KeyEvent e)
 	{
