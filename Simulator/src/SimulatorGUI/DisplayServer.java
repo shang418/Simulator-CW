@@ -38,12 +38,12 @@ public class DisplayServer extends JPanel implements KeyListener {
 
 	public DisplayServer () {
 		// generate random number of obstacles on the map
-		//Random rand=new Random();
-		//int num=rand.nextInt(20);
-		//System.out.println(num);
-		int num=1;
+		Random rand=new Random();
+		int num=rand.nextInt(20);
+		System.out.println(num);
+		//int num=1;
 		myMap=new Map(num);
-		this.enemy=new EnemyUAV(new double[] {0,0,0},0,0);
+		this.enemy=new EnemyUAV(new double[] {50,50,0},0,0);
 		this.player = new PlayerUAV();
 		this.missile_list=new ArrayList<Missile>();
 		SwingUtilities.invokeLater(new Runnable() {
@@ -187,7 +187,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 		g.setColor(Color.MAGENTA);
 		for(Obstacle ob: this.myMap.getCspace().getCspace_obs()){
 			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
-			g.drawRect((int) ob.getX(), (int) ob.getY(),(int) (ob.getWidth()), (int)(ob.getHeight()));
+			g.drawRect((int) (ob.getX()), (int) (ob.getY()),(int) (ob.getWidth()), (int)(ob.getHeight()));
 		}
 		drawUAVs(g);
 	}
