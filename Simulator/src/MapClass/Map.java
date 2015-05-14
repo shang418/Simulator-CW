@@ -23,7 +23,7 @@ public class Map {
 	final static int MAX_NUM_OBSTACLES=10; 
 	final static int MIN_NUM_OBSTACLES=5;
 	final Point startpoint=new Point(450,550); 
-	final Point goalpoint=new Point(10,10);
+	final Point goalpoint=new Point(950,550);
 	ArrayList<Obstacle> list_obstacles; 
 	 Image mapImage; 
 	 CSpace cspace;

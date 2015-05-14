@@ -13,7 +13,6 @@ public class Missile extends Thread{
 	DisplayServer ds;
 	MissileState state;
 	private boolean isRunning;
-	EnemyUAV enemy;
 
 	public Missile(double x, double y, double theta, DisplayServer ds){
 		_x = x;
@@ -21,7 +20,6 @@ public class Missile extends Thread{
 		_theta = theta;
 
 		this.ds = ds;
-		enemy=new EnemyUAV(new double[] {100,100,0},0,0);
 		this.icon=new ImageIcon("Images/Avatars/rocket.png");
 		icon.setImage(icon.getImage().getScaledInstance(RADIUS, RADIUS, Image.SCALE_SMOOTH));
 		this.state=MissileState.FIRED;
@@ -66,14 +64,9 @@ public class Missile extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("Too close" + "player position: " + this.getPosition()[0] + " " + 
-					this.getPosition()[1] +"\n" + "enemy position: " + enemy.getPosition()[0] + " "
-					+ enemy.getPosition()[1]);
 			ds.repaint();
-			
 		}
 		this.state=MissileState.STOPPED;
-
 	}
 
 

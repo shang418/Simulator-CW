@@ -103,7 +103,6 @@ public class DisplayServer extends JPanel implements KeyListener {
 			missile = new Missile(initial_x, initial_y, initial_theta, this);
 			this.missile_list.add(missile);
 			missile.start();
-			
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Sorry but you are out of bullets :(");
@@ -118,7 +117,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 	{
 		JFrame.setDefaultLookAndFeelDecorated(true);
 
-		frame = new JFrame("16.35 Display: Seek 'N' Destroy");
+		frame = new JFrame("Seek 'N' Destroy");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container container = frame.getContentPane();
 		// container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
@@ -131,7 +130,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 		addKeyListener(this);
 		container.add(this, BorderLayout.WEST);
 
-		//  myMap.repaint();
+		// myMap.repaint();
 		//myMap.add(this);
 		setVisible(true);
 		frame.pack();
@@ -170,9 +169,6 @@ public class DisplayServer extends JPanel implements KeyListener {
 				}
 				else {
 					g.drawImage(mle.getImage(),(int)(mle.getPosition()[0]),(int)(mle.getPosition()[1]), null);
-					System.out.println("missile position: " + missile.getPosition()[0] + " " + 
-							missile.getPosition()[1] +"\n" + "enemy position: " + enemy.getPosition()[0] + " "
-							+ enemy.getPosition()[1]);
 				}
 			}
 		//End Game if UAVs crash
@@ -183,23 +179,20 @@ public class DisplayServer extends JPanel implements KeyListener {
 			new GameOverScreen();
 		}
 		//End Game if user hits enemy 3 times
-		int n = 0;
-		for (int i=0; i < this.missile_list.size(); i++){
-			double x = this.missile_list.get(i).getPosition()[0];
-			double y = this.missile_list.get(i).getPosition()[1];
-			double deltx = x-enemy.getPosition()[0];
-			double delty = y-enemy.getPosition()[1];
-			if (Math.sqrt(deltx*deltx + delty*delty) <= 15){
-				n = n + 1;
-				if(n == 3){
-					System.out.println("You win!");
-					System.out.println("missile position: " + missile.getPosition()[0] + " " + 
-							missile.getPosition()[1] +"\n" + "enemy position: " + enemy.getPosition()[0] + " "
-							+ enemy.getPosition()[1]);
-				frame.dispose();
-				new GameOverScreen();}
-			}
-		}
+//		int n = 0;
+//		for (int i=0; i < this.missile_list.size(); i++){
+//			double x = this.missile_list.get(i).getPosition()[0];
+//			double y = this.missile_list.get(i).getPosition()[1];
+//			double deltx = x-enemy.getPosition()[0];
+//			double delty = y-enemy.getPosition()[1];
+//			if (Math.sqrt(deltx*deltx + delty*delty) <= 25){
+//				n = n + 1;
+//				if(n == 3){
+//					System.out.println("You win!");
+//				frame.dispose();
+//				new GameOverScreen();}
+//			}
+//		}
 		}
 		
 		
@@ -219,6 +212,9 @@ public class DisplayServer extends JPanel implements KeyListener {
 			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
 			g.drawRect((int) ob.getX(), (int) ob.getY(),(int) (ob.getWidth()), (int)(ob.getHeight()));
 		}
+		//Target
+		g.setColor(Color.red);
+		g.fillRoundRect(950, 550, 50, 50,5,5);
 		drawUAVs(g);
 	}
 
