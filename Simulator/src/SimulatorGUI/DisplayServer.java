@@ -43,7 +43,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 		//System.out.println(num);
 		int num=1;
 		myMap=new Map(num);
-		this.enemy=new EnemyUAV(new double[] {0,0,0},0,0);
+		this.enemy=new EnemyUAV(new double[] {100,100,0},0,0);
 		this.player = new PlayerUAV();
 		this.missile_list=new ArrayList<Missile>();
 		SwingUtilities.invokeLater(new Runnable() {
@@ -103,6 +103,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 			missile = new Missile(initial_x, initial_y, initial_theta, this);
 			this.missile_list.add(missile);
 			missile.start();
+			
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Sorry but you are out of bullets :(");
@@ -153,8 +154,6 @@ public class DisplayServer extends JPanel implements KeyListener {
 	}
 
 	protected synchronized void drawUAVs(Graphics g) {
-		//Graphics2D g2d = (Graphics2D)g.create();
-		//g2d.rotate(count);
 		g.setColor(Color.black);
 
 		// This chunk of code just translate and rotates the shape.
@@ -171,9 +170,40 @@ public class DisplayServer extends JPanel implements KeyListener {
 				}
 				else {
 					g.drawImage(mle.getImage(),(int)(mle.getPosition()[0]),(int)(mle.getPosition()[1]), null);
+					System.out.println("missile position: " + missile.getPosition()[0] + " " + 
+							missile.getPosition()[1] +"\n" + "enemy position: " + enemy.getPosition()[0] + " "
+							+ enemy.getPosition()[1]);
 				}
 			}
+		//End Game if UAVs crash
+		double delta_x = enemy.getPosition()[0] - player.getPosition()[0];
+		double delta_y = enemy.getPosition()[1] - player.getPosition()[1];
+		if (Math.sqrt(delta_x*delta_x + delta_y*delta_y) <= 20){
+			frame.dispose();
+			new GameOverScreen();
 		}
+		//End Game if user hits enemy 3 times
+		int n = 0;
+		for (int i=0; i < this.missile_list.size(); i++){
+			double x = this.missile_list.get(i).getPosition()[0];
+			double y = this.missile_list.get(i).getPosition()[1];
+			double deltx = x-enemy.getPosition()[0];
+			double delty = y-enemy.getPosition()[1];
+			if (Math.sqrt(deltx*deltx + delty*delty) <= 15){
+				n = n + 1;
+				if(n == 3){
+					System.out.println("You win!");
+					System.out.println("missile position: " + missile.getPosition()[0] + " " + 
+							missile.getPosition()[1] +"\n" + "enemy position: " + enemy.getPosition()[0] + " "
+							+ enemy.getPosition()[1]);
+				frame.dispose();
+				new GameOverScreen();}
+			}
+		}
+		}
+		
+		
+		
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g); //paints the background and image

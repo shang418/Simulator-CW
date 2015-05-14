@@ -64,7 +64,7 @@ public class InstructionsScreen {
 		
 		
 		JTextArea jtext = new JTextArea(content);
-		jtext.setFont(new Font("Helvetica", Font.PLAIN, 20));
+		jtext.setFont(new Font("Helvetica", Font.PLAIN, 15));
 		
 		instructPanel.add(jtext);
 		buttonPanel.add(returnButton);
