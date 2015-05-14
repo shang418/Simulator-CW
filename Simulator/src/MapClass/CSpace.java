@@ -13,7 +13,7 @@ public class CSpace {
 	public void configureCSpace(Map mapclass){
 		for(Obstacle obs: mapclass.getList_obstacles()){
 			int[] d={(int) obs.getX(), (int) obs.getY(), (int) obs.getWidth(),(int) obs.getHeight()};
-			Obstacle n= new Obstacle(d[0]-Player.RADIUS,d[1]-Player.RADIUS,d[2]+2*Player.RADIUS,d[3]+2*Player.RADIUS);
+			Obstacle n= new Obstacle(d[0]-EnemyUAV.RADIUS,d[1]-EnemyUAV.RADIUS,d[2]+2*EnemyUAV.RADIUS,d[3]+2*EnemyUAV.RADIUS);
 			this.cspace_obs.add(n);
 		}
 	}

@@ -8,8 +8,6 @@ public class RRTstar {
 	ArrayList<Point> queue;
 	
 	public RRTstar(){
-		this.path=new ArrayList<Point>(); 
-		this.queue=new ArrayList<Point>();
 	}
 	
 	public Point sampleRandomPoint(){
@@ -22,7 +20,9 @@ public class RRTstar {
 		//TODO
 	}
 	public void initialize_queue(){
-		//TODO
+		this.path=new ArrayList<Point>(); 
+		this.queue=new ArrayList<Point>();
+		
 	}
 	public double getdistanceCost(Point from, Point to){
 		//TODO

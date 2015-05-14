@@ -13,6 +13,7 @@ import java.net.*;
 import java.text.*;
 import java.util.*;
 
+import Avatars.*;
 // import custom map
 import MapClass.Map;
 
@@ -23,139 +24,17 @@ public class DisplayServer extends JPanel implements KeyListener {
   protected int shapeX[], shapeY[];
   protected JFrame frame;
   protected NumberFormat format = new DecimalFormat("#####.##");
-
-  public class History {
-    History() {
-      myX = new double[100000];
-      myY = new double[100000];
-      myNumPoints = 0;
-    }
-    public double [] myX;
-    public double [] myY;
-    int myNumPoints;
-  }
-
-  History [] histories;
-  boolean trace = false;
-
-  public synchronized void clear() {
-	  if (histories !=null){
-		  for (int i = 0; i < histories.length; i++) {
-			  histories[i].myNumPoints = 0;
-		  }
-	  }
-  }
-
-  public synchronized void resetHistories(int numVehicles) {
-    histories = new History[numVehicles];
-    for (int i = 0; i < numVehicles; i++)
-      histories[i] = new History();
-  }
-
-
-  public class MessageListener extends Thread {
-    public BufferedReader my_client; 
-    public DisplayServer my_display;
-    public MessageListener(Socket client, DisplayServer display) {
-      my_display = display; 
-      try {
-	my_client = new BufferedReader
-	  (new InputStreamReader(client.getInputStream()));
-      }
-      catch (IOException e) {
-	System.err.println("Very weird IOException in creating the BufferedReader");
-	System.err.println(e);
-	System.exit(-1);
-      }
-    }
-    public void run() {
-      try {
-	while (true) {
-	  try {
-	    while (!my_client.ready())
-	      sleep(100);
-	  } 
-	  catch (InterruptedException e) {
-	    System.err.println("Thread sleep interrupted... should not happen.");
-	  }
-	  String message = my_client.readLine();
-	  if (message == null)
-	    continue;	  
-	  StringTokenizer st = new StringTokenizer(message);
-	  String tok = st.nextToken();	  
-	  if (tok.equals("clear")) {
-	    my_display.clear();
-	  }
-	  else if (tok.equals("traceon")) {
-	    synchronized (my_display) {
-	      my_display.trace = true;
-	    }
-	  } else if (tok.equals("traceoff")) {
-	    synchronized (my_display) {
-	      my_display.trace = false;
-	    }
-	  } else {
-	    synchronized (my_display) {
-	      if (my_display.numVehicles != Integer.parseInt(tok)) {
-		my_display.numVehicles = Integer.parseInt(tok);
-		my_display.gvX = new double[my_display.numVehicles];
-		my_display.gvY = new double[my_display.numVehicles];
-		my_display.gvTheta = new double[my_display.numVehicles];
-		my_display.resetHistories(numVehicles);
-	      }
-	      for (int i = 0; i < my_display.numVehicles; i++) {
-		tok = st.nextToken();
-		my_display.gvX[i] = Double.parseDouble(tok);
-		tok = st.nextToken();
-		my_display.gvY[i] = Double.parseDouble(tok);
-		tok = st.nextToken();
-		my_display.gvTheta[i] = Double.parseDouble(tok);
-		if (trace) {
-		  if (histories[i].myNumPoints == histories[i].myX.length) {
-		    System.out.println("Max history length exceeded. Too many "+
-				       "points!");
-		  } else {
-		    int n = histories[i].myNumPoints;
-		    histories[i].myX[n] = my_display.gvX[i];
-		    histories[i].myY[n] = my_display.gvY[i];
-		    histories[i].myNumPoints++;
-		  }
-		} // end if (trace) 
-	      } // end for (int i = 0; i < my_display.numVehicles; i++) 
-	    } // End synchronized (my_display) 
-	  }
-	  my_display.repaint();
-	}
-      }
-      catch (IOException e) {
-      }
-      return; 
-    }
-  }
-
-  public DisplayServer () {
+  //PlayerUAV player; 
+  EnemyUAV enemy; 
+  
+    public DisplayServer () {
 	  // generate random number of obstacles on the map
 	Random rand=new Random();
 	int num=rand.nextInt(20);
 	System.out.println(num);
 	myMap=new Map(num);
-    shapeX = new int[9];
-    shapeY = new int[9];
+    this.enemy=new EnemyUAV(new double[] {0,0,0},0,0);
 
-    // This is just the UAV shape centred at the origin.
-    // If you wanted to draw a more realistic UAV, you would modify this
-    // polygon. 
-
-    shapeX[0] = 10;  shapeY[0] = 0;
-    shapeX[1] = 0;   shapeY[1] = -5;
-    shapeX[2] = 0;   shapeY[2] = -2;
-    shapeX[3] = -8;  shapeY[3] = -2;
-    shapeX[4] = -10; shapeY[4] = -4;
-    shapeX[5] = -10; shapeY[5] = 4;
-    shapeX[6] = -8;  shapeY[6] = 2;
-    shapeX[7] = 0;   shapeY[7] = 2;
-    shapeX[8] = 0;   shapeY[8] = 5;
-    
     SwingUtilities.invokeLater(new Runnable() {
 	public void run() {
 	  startGraphics();
@@ -202,65 +81,22 @@ public class DisplayServer extends JPanel implements KeyListener {
     }
   }
 
-  protected synchronized void drawVehicles(Graphics g) {
+  protected synchronized void drawUAVs(Graphics g) {
     g.setColor(Color.black);
 
     // This chunk of code just translate and rotates the shape.
-
-    for (int j = 0; j < numVehicles; j++) {
-      int drawX[] = new int[9];
-      int drawY[] = new int[9];
-
-      for (int i = 0; i < 9; i++) {
-	// We scale the x and y by 5, since the bounds on X and Y are 100x100
-	// but our windows is 500x500.
-
-	double x = gvX[j]*5;
-	double y = gvY[j]*5;
-	double th = gvTheta[j];
-	drawX[i] = (int)(x+Math.cos(-th)*shapeX[i]+Math.sin(th)*shapeY[i]);
-	drawY[i] = (int)(y-Math.sin( th)*shapeX[i]+Math.cos(th)*shapeY[i]);
-	drawY[i] = 500- drawY[i];
-      }
-      g.drawPolygon(drawX, drawY, 9);
+    
+      g.drawImage(this.enemy.getImage(), (int) (this.enemy.getPosition()[0]),(int) (this.enemy.getPosition()[1]), null);
     }
-  }
-
-  protected synchronized void drawHistories(Graphics g) {
-    g.setColor(Color.black);
-
-    // This chunk of code just translate and rotates the shape.
-
-    for (int j = 0; j < numVehicles; j++) {
-      int drawX[] = new int[histories[j].myNumPoints];
-      int drawY[] = new int[histories[j].myNumPoints];
-
-      for (int i = 0; i < histories[j].myNumPoints; i++) {
-	// We scale the x and y by 5, since the bounds on X and Y are 100x100
-	// but our windows is 500x500.
-
-	double x = histories[j].myX[i]*5;
-	double y = histories[j].myY[i]*5;
-	drawX[i] = (int)(x);
-	drawY[i] = 500- (int)y;
-      }
-      g.drawPolygon(drawX, drawY, histories[j].myNumPoints);
-    }
-  }
 
   protected void paintComponent(Graphics g) {
     super.paintComponent(g); //paints the background and image
     
     g.setColor(Color.white);
-    if (trace) 
-      drawHistories(g);
-    drawVehicles(g);
+    drawUAVs(g);
   }
 
-  protected void addClient(Socket client) {
-    MessageListener l = new MessageListener(client, this);
-    l.start();
-  }
+ 
 
 
 }
