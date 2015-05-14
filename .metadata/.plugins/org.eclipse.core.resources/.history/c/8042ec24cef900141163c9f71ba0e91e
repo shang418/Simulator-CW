@@ -1,0 +1,17 @@
+package Avatars;
+
+import javax.swing.JLabel;
+
+public class PlayerUAV extends JLabel {
+	private double _x,_y,_theta;
+	static final int SCREEN_WIDTH = 
+
+	public PlayerUAV() {
+			
+	}
+	
+	private startingPose(){
+		
+	}
+
+}
