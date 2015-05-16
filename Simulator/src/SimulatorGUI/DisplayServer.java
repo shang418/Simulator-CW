@@ -3,6 +3,8 @@ package SimulatorGUI;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,6 +20,7 @@ import Avatars.*;
 // import custom map
 import MapClass.Map;
 import MapClass.Obstacle;
+import MotionControl.EnemyController;
 import MotionPlanning.Node;
 
 public class DisplayServer extends JPanel implements KeyListener {
@@ -33,7 +36,8 @@ public class DisplayServer extends JPanel implements KeyListener {
 	private boolean isfired;
 	ArrayList<Missile> missile_list;
 	private double initial_x, initial_y, initial_theta;
-	
+	EnemyController controller;
+	int n=0;
 	
 
 	public DisplayServer () {
@@ -43,13 +47,12 @@ public class DisplayServer extends JPanel implements KeyListener {
 		System.out.println(num);
 		//int num=1;
 		myMap=new Map(num);
-<<<<<<< HEAD
-		this.enemy=new EnemyUAV(new double[] {50,50,0},0,0);
-=======
-		this.enemy=new EnemyUAV(new double[] {100,100,0},0,0);
->>>>>>> c51873488ba6b399b3590c4351d9dde79752de25
+		this.enemy=new EnemyUAV(new double[] {900,500,0},0,0);
+		
 		this.player = new PlayerUAV();
 		this.missile_list=new ArrayList<Missile>();
+		this.controller=new EnemyController(this.enemy,this.player,this.myMap.getList_obstacles(),this);
+		this.enemy.setController(controller);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				startGraphics();
@@ -64,33 +67,43 @@ public class DisplayServer extends JPanel implements KeyListener {
 		double ntheta=player.getPosition()[2];
 		// Directional controls based off key events for player uav
 		if (e.getKeyCode() == KeyEvent.VK_A){
-			if(!(myMap.getCspace().violatesCSpace(new Node ((int)(nx-5), (int)ny)))){
 				
-				nx -= 5;
-			}
+			if((nx-5)>10 )
+			nx -= 5;
+				
+				
+				
 		}
 		if (e.getKeyCode() == KeyEvent.VK_D){
-			if(!(myMap.getCspace().violatesCSpace(new Node ((int)(nx+5), (int)(ny))))){	
+			
+			
+			if((nx+5)<(950) )
 				nx += 5;
-			}
+		
 		}
 		if (e.getKeyCode() == KeyEvent.VK_W){
-			if(!(myMap.getCspace().violatesCSpace(new Node ((int)(nx), (int)(ny-5))))){	
+			
+			if((ny-5)>10 )
 				ny -= 5;
-			}
+			
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S){
-			if(!(myMap.getCspace().violatesCSpace(new Node ((int)nx, (int)(ny+5))))){	
+			if((ny+5)<(550) )
 				ny += 5;
-			}
+			
 		}
 		if (e.getKeyCode() == KeyEvent.VK_I){
-			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1], player.getPosition()[2]});
-			//count = 0.1;
+			{
+				count=0.01;
+				ntheta += count;
+			}
+			
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S){
-			player.setPosition(new double[]{player.getPosition()[0], player.getPosition()[1], player.getPosition()[2]});
-			//count = -0.1;
+			{
+				count=0.01;
+				ntheta -= count;
+			}
 		}
 		player.setPosition(new double[]{nx,ny,ntheta});
 		repaint();
@@ -142,9 +155,6 @@ public class DisplayServer extends JPanel implements KeyListener {
 		frame.setVisible(true);    
 	}
 
-	
-
-	
 
 	public void keyTyped(KeyEvent e)
 	{
@@ -160,7 +170,12 @@ public class DisplayServer extends JPanel implements KeyListener {
 		g.setColor(Color.black);
 
 		// This chunk of code just translate and rotates the shape.
+		
+		AffineTransform tx = AffineTransform.getRotateInstance(count, locationX, locationY);
+		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
+		// Drawing the rotated image at the required drawing locations
+		g2d.drawImage(op.filter(image, null), drawLocationX, drawLocationY, null);
 		g.drawImage(this.enemy.getImage(), (int) (this.enemy.getPosition()[0]),(int) (this.enemy.getPosition()[1]), null);
 		g.drawImage(this.player.getImage(), (int) (this.player.getPosition()[0]),(int) (this.player.getPosition()[1]), null);  
 		Iterator<Missile> missIterator= this.missile_list.listIterator();
@@ -178,25 +193,26 @@ public class DisplayServer extends JPanel implements KeyListener {
 		//End Game if UAVs crash
 		double delta_x = enemy.getPosition()[0] - player.getPosition()[0];
 		double delta_y = enemy.getPosition()[1] - player.getPosition()[1];
-		if (Math.sqrt(delta_x*delta_x + delta_y*delta_y) <= 20){
+		if (Math.sqrt(delta_x*delta_x + delta_y*delta_y) <= 25){
 			frame.dispose();
 			new GameOverScreen();
+			JOptionPane.showMessageDialog(null,"Kamikaze is one way to do it....");
 		}
 		//End Game if user hits enemy 3 times
-//		int n = 0;
-//		for (int i=0; i < this.missile_list.size(); i++){
-//			double x = this.missile_list.get(i).getPosition()[0];
-//			double y = this.missile_list.get(i).getPosition()[1];
-//			double deltx = x-enemy.getPosition()[0];
-//			double delty = y-enemy.getPosition()[1];
-//			if (Math.sqrt(deltx*deltx + delty*delty) <= 25){
-//				n = n + 1;
-//				if(n == 3){
-//					System.out.println("You win!");
-//				frame.dispose();
-//				new GameOverScreen();}
-//			}
-//		}
+		
+		for (int i=0; i < this.missile_list.size(); i++){
+			double x = this.missile_list.get(i).getPosition()[0];
+			double y = this.missile_list.get(i).getPosition()[1];
+			double deltx = x-enemy.getPosition()[0];
+			double delty = y-enemy.getPosition()[1];
+			if (Math.sqrt(deltx*deltx + delty*delty) <= 25){
+				n++;
+				if(n == 1){
+					System.out.println("You win!");
+				frame.dispose();
+				new GameOverScreen();}
+			}
+		}
 		}
 		
 		
@@ -211,14 +227,14 @@ public class DisplayServer extends JPanel implements KeyListener {
 			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
 			g.drawImage(ob.getImage(), (int) ob.getX(), (int) ob.getY(),null);
 		}
-		g.setColor(Color.MAGENTA);
+		/*g.setColor(Color.MAGENTA);
 		for(Obstacle ob: this.myMap.getCspace().getCspace_obs()){
 			//System.out.println("image height and width: ["+ob.getImage().getHeight(null)+","+ob.getImage().getWidth(null)+"]");
 			g.drawRect((int) (ob.getX()), (int) (ob.getY()),(int) (ob.getWidth()), (int)(ob.getHeight()));
-		}
+		}*/
 		//Target
 		g.setColor(Color.red);
-		g.fillRoundRect(950, 550, 50, 50,5,5);
+		g.fillRoundRect(40, 30, 50, 50,5,5);
 		drawUAVs(g);
 	}
 

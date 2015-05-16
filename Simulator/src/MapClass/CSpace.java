@@ -32,8 +32,10 @@ public class CSpace {
 	
 	public boolean violatesCSpace(Node n){
 		for(Obstacle obs: cspace_obs){
-			if(cspace_obs.contains((Point)n)){
-				System.out.println("CSpace violated");
+			System.out.println("Node: ["+n.getX()+","+n.getY());
+			System.out.println("Obstacle: ["+obs.getX()+","+obs.getY());
+			if(obs.contains(n)){
+				System.out.println("Invading my space!!");
 				return true;
 			}
 		}

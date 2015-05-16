@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import MotionControl.Control;
+import MotionControl.EnemyController;
 
 public class EnemyUAV{
 
@@ -18,6 +19,7 @@ public class EnemyUAV{
 		  private double _dx, _dy, _dtheta;
 		  public static int RADIUS=50;
 		  ImageIcon icon;
+		  EnemyController econtrol;
 		  
 		    public EnemyUAV (double pose[], double s, double omega) {
 		
@@ -38,14 +40,18 @@ public class EnemyUAV{
 		    
 		    clampPosition();
 		    clampVelocity();
-		  }
+		    }
 
+public void setController(EnemyController con){
+	this.econtrol=con;
+	this.econtrol.start();
+}
 public Image getImage(){
 	return this.icon.getImage();
 }
 		  private void clampPosition() {
-		    _x = Math.min(Math.max(_x,0),100);
-		    _y = Math.min(Math.max(_y,0),100);
+		    _x = Math.min(Math.max(_x,0),900);
+		    _y = Math.min(Math.max(_y,0),500);
 		    _theta = Math.min(Math.max(_theta, -Math.PI), Math.PI);
 		    if (_theta - Math.PI == 0 || Math.abs(_theta - Math.PI) < 1e-6)
 		      _theta = -Math.PI;
@@ -70,7 +76,7 @@ public Image getImage(){
 		    _dtheta = Math.min(Math.max(_dtheta, -Math.PI/4), Math.PI/4);		
 		  }
 
-		  public double [] getPosition() {
+		  public synchronized double [] getPosition() {
 		    double[] position = new double[3];
 		    position[0] = _x;
 		    position[1] = _y;
@@ -88,7 +94,7 @@ public Image getImage(){
 		    return velocity;
 		  }
 
-		  public void setPosition(double[] newPos) {
+		  public synchronized void setPosition(double[] newPos) {
 		    if (newPos.length != 3)
 		      throw new IllegalArgumentException("newPos must be of length 3");      
 
@@ -117,12 +123,11 @@ public Image getImage(){
 		    _dx = c.getSpeed() * Math.cos(_theta);
 		    _dy = c.getSpeed() * Math.sin(_theta);
 		    _dtheta = c.getRotVel();
-
 		    clampVelocity();
 		  }
 		   
-		  public synchronized void updateState(int sec, int msec) {
-		    double t = sec + msec * 1e-3;
+		  public synchronized void updateState() {
+		    double t = 1.0;
 
 		    // Curve model
 		    // Assuming that _dx, _dy, and _dtheta was set beforehand by controlVehicle()
@@ -156,5 +161,11 @@ public Image getImage(){
 
 		    clampPosition();
 		    clampVelocity();
+		    try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		  }
 		}

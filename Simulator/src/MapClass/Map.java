@@ -21,9 +21,9 @@ public class Map {
 	public static final int LENGTH = 1000;
 	public static final int WIDTH = 600; 
 	final static int MAX_NUM_OBSTACLES=10; 
-	final static int MIN_NUM_OBSTACLES=5;
+	final static int MIN_NUM_OBSTACLES=1;
 	final Point startpoint=new Point(450,550); 
-	final Point goalpoint=new Point(950,550);
+	final Point goalpoint=new Point(10,10);
 	ArrayList<Obstacle> list_obstacles; 
 	 Image mapImage; 
 	 CSpace cspace;
@@ -45,7 +45,7 @@ public class Map {
 			}
 			this.cspace=new CSpace();
 			generateObstacles();
-			addWallsasObstacles();
+	//		addWallsasObstacles();
 			this.cspace.configureCSpace(this);
 	}
 	public Image getMapImage(){

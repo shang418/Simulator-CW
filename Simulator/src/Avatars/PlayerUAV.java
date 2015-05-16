@@ -32,7 +32,7 @@ public class PlayerUAV {
 		return this.icon.getImage();
 	}
 
-	public double [] getPosition() {
+	public synchronized double [] getPosition() {
 		double[] position = new double[3];
 		position[0] = _x;
 		position[1] = _y;
@@ -41,7 +41,7 @@ public class PlayerUAV {
 		return position;
 	}
 	
-	public void setPosition(double[] newPos) {
+	public synchronized void setPosition(double[] newPos) {
 	    if (newPos.length != 3)
 	      throw new IllegalArgumentException("newPos must be of length 3");   
 	    _x = newPos[0];

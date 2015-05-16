@@ -12,6 +12,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import MotionPlanning.Node;
+
 
 public class Obstacle extends Rectangle {
 	
@@ -37,6 +39,20 @@ public class Obstacle extends Rectangle {
 			image.setImage(image.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
 		}
 		
+		public boolean contains(Node N){
+			int delta_x=(int)(N.getX()-this.getX()); 
+			int delta_y=(int)(N.getY()-this.getY());
+			int count=0;
+			if(delta_x<(this.getWidth()/2) && delta_x>(-this.getWidth()/2)){
+				count++; 
+			}
+			if(delta_y<(this.getHeight()/2) && delta_y>(-this.getHeight()/2)){
+				count++; 
+			}
+			if(count<2)
+				return false;
+			else return true;
+		}
 		public Image getImage(){
 			return image.getImage();
 		}

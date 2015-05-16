@@ -20,6 +20,7 @@ public class Missile extends Thread{
 		_theta = theta;
 
 		this.ds = ds;
+
 		this.icon=new ImageIcon("Images/Avatars/rocket.png");
 		icon.setImage(icon.getImage().getScaledInstance(RADIUS, RADIUS, Image.SCALE_SMOOTH));
 		this.state=MissileState.FIRED;
@@ -67,6 +68,7 @@ public class Missile extends Thread{
 			ds.repaint();
 		}
 		this.state=MissileState.STOPPED;
+
 	}
 
 
