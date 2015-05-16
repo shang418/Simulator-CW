@@ -34,11 +34,20 @@ public class Obstacle extends Rectangle {
 		}
 		
 		public Obstacle(int x, int y, int width, int height ){
-			this.setRect(x, y, width, height);
+			int[] pose= clampPosition(x,y,width,height);
+			this.setRect(pose[0], pose[1], pose[2], pose[3]);
+			
 			image=new ObstacleImage();
 			image.setImage(image.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
 		}
-		
+		 private int[] clampPosition(int _x, int _y,int width, int height) {
+			    _x = Math.min(Math.max(_x,0),900);
+			    _y = Math.min(Math.max(_y,0),500);
+			    height = Math.min(Math.max(height,MINSIZE),MAXSIZE);
+			    width = Math.min(Math.max(width, MINSIZE),MAXSIZE);
+			    return new int[]{_x,_y,width,height}; 
+			  }
+
 		public boolean contains(Node N){
 			int delta_x=(int)(N.getX()-this.getX()); 
 			int delta_y=(int)(N.getY()-this.getY());
@@ -52,6 +61,13 @@ public class Obstacle extends Rectangle {
 			if(count<2)
 				return false;
 			else return true;
+		}
+		@Override
+		public void setBounds(int x, int y, int width, int height){
+			int[] pose= clampPosition(x,y,width,height);
+			this.setRect(pose[0], pose[1], pose[2], pose[3]);
+			
+			
 		}
 		public Image getImage(){
 			return image.getImage();

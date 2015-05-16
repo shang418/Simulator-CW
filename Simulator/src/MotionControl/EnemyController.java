@@ -15,12 +15,10 @@ import SimulatorGUI.GameOverScreen;
 	    private ArrayList<Obstacle> ObsList;
 	    private PlayerUAV player;
 	    private EnemyUAV enemy;
-	    final int avoidWallDist=20;
+	    final int avoidWallDist=50;
 	    MissileState state;
 	    DisplayServer server;
-	    private int _lastCheckedTime = 0;
-	    private int _lastCheckedMTime = 0;
-
+	  
 	    protected static int totalNumControllers = 0;
 	    protected int controllerID = 0;
 
@@ -34,13 +32,6 @@ import SimulatorGUI.GameOverScreen;
 	    private int _numSides = 5;
 	    private double circumCircleRadius = 25.0;
 
-	    private boolean isTurning = false;
-	    private boolean controllerInitialized = false;
-
-	    private double turnDuration;
-	    private double edgeTravelDuration;
-
-	    private double timeOfManoeuverStart;
 
 	    public EnemyController(EnemyUAV enemy, PlayerUAV player, ArrayList<Obstacle> ObsList, DisplayServer server) {
 		this.ObsList = ObsList;
@@ -48,6 +39,9 @@ import SimulatorGUI.GameOverScreen;
 		this.enemy=enemy;
 		this.state=MissileState.FIRED;
 		this.server=server;
+		if(this.ObsList==null || this.player==null || this.enemy==null|| this.server==null){
+			throw new IllegalArgumentException("");
+		}
 	    }
 	    
 	    public void run()
@@ -77,55 +71,7 @@ import SimulatorGUI.GameOverScreen;
 				this.state=MissileState.STOPPED;
 			}
 	    }
-	    private void initializeController()
-	    {
-		/* The bulk of this method is to determine how long to spend turning at
-		 * each corner of the polygon, and how long to spend driving along each
-		 * edge. We calculate turnDuration and edgeTravelDuration, and then use
-		 * these inside getControl to decide when to switch from turning to
-		 * travelling straight and back again. */ 
-
-		/* Firstly, we know we need to turn the vehicle by PI - the internal angle
-		 * of the polygon */
-
-		double interiorAngle = Math.PI*(_numSides-2)/_numSides;
-		double turningAngle = Math.PI - interiorAngle;
-
-		/* And we're going to turn the vehicle along the circumference of the
-		 * smallest circle we can make. */ 
-
-		double minTurningRadius = minTransSpeed / maxRotSpeed;
-
-		/* The distance we have to travel along that smallest circle is a function
-		 * of the angle and the radius, and is an arc along that small circle. */
-		double arcLength = turningAngle * minTurningRadius;
-
-		/* We can work out how long each turn will take based on the arcLength and
-		 * how fast we are travelling. Of course, we could also work it out based
-		 * on the angle and our maximum angular velocity. */
-
-		turnDuration = arcLength / minTransSpeed;
-
-		// Edge length of n-polygon
-		double polyEdge = 2 * circumCircleRadius * Math.cos(interiorAngle / 2);
-		// Subtract by chord length spent for turns
-		double edgeLength = polyEdge - 2 * (minTurningRadius * Math.tan(turningAngle/2));
-
-		/* And we now have the amount of time to spend travelling straight along
-		 * each edge. */
-		edgeTravelDuration = edgeLength/maxTransSpeed;
-
-		/* Also in method, we initialize the controller state. It's a little ugly,
-		 * but we'll start as if we're half-way through a turn, and tangent to the
-		 * outer circle. This makes it easy to put the vehicle on a legal part of
-		 * the polyon, rather than having to drive to it. */ 
-	    
-		isTurning = true;
-		timeOfManoeuverStart = -turnDuration/2.0; 
-		
-		controllerInitialized = true;
-	    }
-	    
+	   
 
 	    /**
 	     * Returns a control negating the output for the FollowingControler. Added
@@ -182,6 +128,9 @@ import SimulatorGUI.GameOverScreen;
 	    	if (desiredSpeed < 5) {
 	    	    desiredSpeed = 5;
 	    	}
+	    	Control a = avoidObstacles(myPos);
+	    	if (a != null)
+	    	    return a;
 
 	    	Control c = new Control(desiredSpeed, desiredOmega);
 	    	return c;
@@ -199,8 +148,9 @@ import SimulatorGUI.GameOverScreen;
 	    	return rtheta;
 	    }
 
-	    protected Control avoidWalls(double[] pos) {
-		if (pos[0] > 100 - avoidWallDist && pos[1] > 100 - avoidWallDist) {
+	    protected Control avoidObstacles(double[] pos) {
+	    	for(Obstacle obs: this.ObsList){
+		if (pos[0] > obs.getCenterX() - avoidWallDist && pos[1] > obs.getCenterY() - avoidWallDist) {
 		    if (pos[2] > -3 * Math.PI / 4.0) {
 			return new Control(5, -Math.PI/4);
 		    } else {
@@ -208,60 +158,7 @@ import SimulatorGUI.GameOverScreen;
 		    }
 		}
 
-		if (pos[0] > 100 - avoidWallDist && pos[1] < 0 + avoidWallDist) {
-		    if (pos[2] > 3 * Math.PI / 4.0) {
-			return new Control(5, -Math.PI/4);
-		    } else {
-			return new Control(5, Math.PI/4);
-		    }
-		}
-
-		if (pos[0] < 0 + avoidWallDist && pos[1] > 100 - avoidWallDist) {
-		    if (pos[2] > -Math.PI / 4.0) {
-			return new Control(5, -Math.PI/4);
-		    } else {
-			return new Control(5, Math.PI/4);
-		    }
-		}
-
-		if (pos[0] < 0 + avoidWallDist && pos[1] < 0 + avoidWallDist) {
-		    if (pos[2] > Math.PI / 4.0) {
-			return new Control(5, -Math.PI/4);
-		    } else {
-			return new Control(5, Math.PI/4);
-		    }
-		}
-
-		if (pos[0] > 100 - avoidWallDist) {
-		    if (pos[2] > 0) {
-			return new Control(5, Math.PI/4);
-		    } else {
-			return new Control(5, -Math.PI/4);
-		    }
-		}
-		if (pos[0] < 0 + avoidWallDist) {
-		    if (pos[2] > 0) {
-			return new Control(5, -Math.PI/4);
-		    } else {
-			return new Control(5, Math.PI/4);
-		    }
-		}
-
-		if (pos[1] < 0 + avoidWallDist) {
-		    if (pos[2] > Math.PI / 2) {
-			return new Control(5, -Math.PI/4);
-		    } else {
-			return new Control(5, Math.PI/4);
-		    }
-		}
-
-		if (pos[1] > 100- avoidWallDist) {
-		    if (pos[2] > -Math.PI / 2) {
-			return new Control(5, -Math.PI/4);
-		    } else {
-			return new Control(5, Math.PI/4);
-		    }
-		}
+	    	}
 		return null;
 	    }
 

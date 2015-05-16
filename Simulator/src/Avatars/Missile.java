@@ -18,14 +18,29 @@ public class Missile extends Thread{
 		_x = x;
 		_y = y;
 		_theta = theta;
-
+		clampPosition(); 
 		this.ds = ds;
-
+		if(ds==null){
+			throw new NullPointerException("DisplayServer null pointer");
+		}
 		this.icon=new ImageIcon("Images/Avatars/rocket.png");
 		icon.setImage(icon.getImage().getScaledInstance(RADIUS, RADIUS, Image.SCALE_SMOOTH));
 		this.state=MissileState.FIRED;
 	}
+	public synchronized void setPosition(double x, double y, double theta) {
+	   
+	    _x = x;
+	    _y = y;
+	    _theta = theta;
 
+	    clampPosition();
+	  }
+	private void clampPosition() {
+	    _x = Math.min(Math.max(_x,0),900);
+	    _y = Math.min(Math.max(_y,0),500);
+	    _theta = Math.min(Math.max(_theta, -Math.PI), Math.PI);
+	    
+	  }
 	public Image getImage(){
 		return this.icon.getImage();
 	}

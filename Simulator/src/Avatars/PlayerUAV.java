@@ -11,7 +11,7 @@ public class PlayerUAV {
 	private double _x,_y,_theta;
 	static final int WIDTH = 1400;
 	static final int HEIGHT = 800;
-	int[] _startPose = {500,300,0};
+	int[] _startPose = {500,100,0};
 	private int _velx = 2,_vely=2;
 	private double rotvel = Math.PI/4;
 	 ImageIcon icon;

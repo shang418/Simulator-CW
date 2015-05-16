@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -43,7 +44,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 	public DisplayServer () {
 		// generate random number of obstacles on the map
 		Random rand=new Random();
-		int num=rand.nextInt(20);
+		int num=rand.nextInt(50);
 		System.out.println(num);
 		//int num=1;
 		myMap=new Map(num);
@@ -170,12 +171,9 @@ public class DisplayServer extends JPanel implements KeyListener {
 		g.setColor(Color.black);
 
 		// This chunk of code just translate and rotates the shape.
-		
-		AffineTransform tx = AffineTransform.getRotateInstance(count, locationX, locationY);
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-
-		// Drawing the rotated image at the required drawing locations
-		g2d.drawImage(op.filter(image, null), drawLocationX, drawLocationY, null);
+		/*  Graphics2D g2d=(Graphics2D)g.create(); // Create a Java2D version of g.
+	     //    g2d.translate((count*180/Math.PI), 0); // Translate the center of our coordinates.
+	         g2d.rotate(count*180/Math.PI);  // Rotate the image by 1 radian.*/
 		g.drawImage(this.enemy.getImage(), (int) (this.enemy.getPosition()[0]),(int) (this.enemy.getPosition()[1]), null);
 		g.drawImage(this.player.getImage(), (int) (this.player.getPosition()[0]),(int) (this.player.getPosition()[1]), null);  
 		Iterator<Missile> missIterator= this.missile_list.listIterator();
@@ -194,6 +192,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 		double delta_x = enemy.getPosition()[0] - player.getPosition()[0];
 		double delta_y = enemy.getPosition()[1] - player.getPosition()[1];
 		if (Math.sqrt(delta_x*delta_x + delta_y*delta_y) <= 25){
+			frame.remove(this);
 			frame.dispose();
 			new GameOverScreen();
 			JOptionPane.showMessageDialog(null,"Kamikaze is one way to do it....");
@@ -213,6 +212,7 @@ public class DisplayServer extends JPanel implements KeyListener {
 				new GameOverScreen();}
 			}
 		}
+		count=0; 
 		}
 		
 		
