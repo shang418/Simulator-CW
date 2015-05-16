@@ -10,34 +10,21 @@ import MapClass.Obstacle;
 import SimulatorGUI.DisplayServer;
 import SimulatorGUI.GameOverScreen;
 
+enum ControllerState {STARTED, STOPPED};
 	public class EnemyController extends Thread {
 
 	    private ArrayList<Obstacle> ObsList;
 	    private PlayerUAV player;
 	    private EnemyUAV enemy;
-	    final int avoidWallDist=50;
-	    MissileState state;
+	    final int avoidObsDist=50;
+	    ControllerState state;
 	    DisplayServer server;
-	  
-	    protected static int totalNumControllers = 0;
-	    protected int controllerID = 0;
-
-	    // Hard-coded constraints come from documentation. Min translation 
-	    // speed of the vehicle is 5 m/s, max translation speed is 10 m/s, 
-	    // max rotational speed is PI/4. The diameter of outer circle is 50.
-	    private double minTransSpeed = 5;
-	    private double maxTransSpeed = 10;
-	    private double maxRotSpeed = Math.PI/4;
-
-	    private int _numSides = 5;
-	    private double circumCircleRadius = 25.0;
-
 
 	    public EnemyController(EnemyUAV enemy, PlayerUAV player, ArrayList<Obstacle> ObsList, DisplayServer server) {
 		this.ObsList = ObsList;
 		this.player=player;
 		this.enemy=enemy;
-		this.state=MissileState.FIRED;
+		this.state=ControllerState.STARTED;
 		this.server=server;
 		if(this.ObsList==null || this.player==null || this.enemy==null|| this.server==null){
 			throw new IllegalArgumentException("");
@@ -47,7 +34,7 @@ import SimulatorGUI.GameOverScreen;
 	    public void run()
 	    {
 		
-		while(this.state!=MissileState.STOPPED){
+		while(this.state!=ControllerState.STOPPED){
 			this.getStopped();
 		    // Generate a new control
 			Random rng=new Random(); 
@@ -68,7 +55,7 @@ import SimulatorGUI.GameOverScreen;
 	    	double delta_x = enemy.getPosition()[0] - 40.0;
 			double delta_y = enemy.getPosition()[1] - 30.0;
 			if (Math.sqrt(delta_x*delta_x + delta_y*delta_y) <= 25){
-				this.state=MissileState.STOPPED;
+				this.state=ControllerState.STOPPED;
 			}
 	    }
 	   
@@ -150,7 +137,7 @@ import SimulatorGUI.GameOverScreen;
 
 	    protected Control avoidObstacles(double[] pos) {
 	    	for(Obstacle obs: this.ObsList){
-		if (pos[0] > obs.getCenterX() - avoidWallDist && pos[1] > obs.getCenterY() - avoidWallDist) {
+		if (pos[0] > obs.getCenterX() - avoidObsDist && pos[1] > obs.getCenterY() - avoidObsDist) {
 		    if (pos[2] > -3 * Math.PI / 4.0) {
 			return new Control(5, -Math.PI/4);
 		    } else {
